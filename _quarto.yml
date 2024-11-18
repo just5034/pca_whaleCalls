@@ -6,11 +6,11 @@ execute:
   echo: true
 
 book:
-  title: "YOUR PROJECT TITLE"
+  title: "Bird Migration"
   author:
-    - AUTHOR1 (UNI1)
-    - AUTHOR2 (UNI2)
-  repo-url: https://github.com/YOUR_GITHUB_ACCOUNT/REPO_NAME
+    - Justin Kim (UNI1)
+    - Kshitij Patil (UNI2)
+  repo-url: https://github.com/just5034/pca_whaleCalls
   date: today
   page-footer:
     right: |
