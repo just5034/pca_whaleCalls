@@ -16,7 +16,7 @@ Inspection of the data folder indicates that all 30,000 of the training images t
 
 ```{r}
 
-training_labels <- read.csv("data/archive/kaggle/working/train.csv")
+training_labels <- read.csv("data/train.csv")
 sum(is.na(training_labels))
 
 ```
@@ -68,7 +68,7 @@ sampled_training_labels <- sampled_training_labels |>
   mutate(image_name = sub("\\.aiff$", ".png", image_name))
 
 
-write.csv(sampled_training_labels, "data/archive/kaggle/working/train.csv", row.names = FALSE)
+write.csv(sampled_training_labels, "data/train.csv", row.names = FALSE)
 
 # View the new DataFrame
 head(sampled_training_labels)
@@ -80,7 +80,7 @@ Below we delete the images in our data directory that do not have a label observ
 ```{r}
 
 # Set the working directory to where the .png files and train.csv are located
-setwd("data/archive/kaggle/working/")
+setwd("data/working/")
 
 # Read the train.csv file
 train_df <- read.csv("train.csv")
