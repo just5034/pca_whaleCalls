@@ -1,16 +1,9 @@
+## Principal Component Filtration for Bioacoustics
 
+In this project repository / environment we offer both a workflow to reproduce a novel bio-acoustic denoising algorithm
 
-### Update README (GitHub or RStudio)
+and an in depth exploratory analysis of the resulting data set post-transformation. Both the rigor and the motivation for our algorithm
 
-- [ ] 1. Delete the content of this **README** and add a short description of your project in its place. If you're working locally, be sure to commit and push the changes to GitHub.
-
-### Optional
-
-- [ ] 1. Choose a theme from [https://bootswatch.com/](https://bootswatch.com/) and replace "cosmo" in `_quarto.yml` with your prefered theme.
-
-### Additional features
-
-Please consult the official guide to **quarto** book websites: [https://quarto.org/docs/books/](https://quarto.org/docs/books/)
-
+is discussed in brief detail as well as the implications said method(s) have on the data set to which our methods are applied.
 
 
