@@ -1,5 +1,105 @@
 # Data
 
+We source our data from a dataset and audio-to-image conversion process provided by Cornell University's Bioacoustic Research Program for the purposes of hosting a public Kaggle challenge.
+
+https://www.kaggle.com/competitions/whale-detection-challenge/overview
+https://www.kaggle.com/datasets/diegoasuarezg/whale-detection-challenge-255x255-png-dataset
+
+
 ## Description
 
+The data we will be using is comprised of 30,000 two-second .aiff audio files that have been converted to .png images. The audio itself was collected at a sample rate of 2kHz In addition, the observations (being any one such image) have a corresponding Boolean label in a csv file indicating whether or not the image actually contains a whale call.
+
 ## Missing value analysis
+
+Inspection of the data folder indicates that all 30,000 of the training images to be used for the purposes of our analyses are included. Furthermore, we check for missingness in the dataframe containing the labels for our data points, and find that there is no missing data. This is unsurprising as the data was processed and distributed by a reputable Kaggle competition host.
+
+```{r}
+
+training_labels <- read.csv("data/archive/kaggle/working/train.csv")
+sum(is.na(training_labels))
+
+```
+
+One more key characteristic of the data we want to be concerned with is the class balance. That is, what is the ratio of images with a whale call contained within (label = 1) to the images without a call (label = 0)?
+
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Assuming your DataFrame is named training_labels
+ggplot(training_labels, aes(x = factor(label))) +
+  geom_bar() +
+  labs(
+    title = "Distribution of Labels",
+    x = "Label",
+    y = "Count"
+  )
+
+```
+
+
+Observe that the vast majority of observations do not contain a call. For our purposes, we will want to keep a small portion of the observations while adjusting for the class imbalance via under sampling. 
+
+We will keep 500 observations from each class and create a new random subset of the original dataset.
+
+
+```{r}
+
+
+# Assuming your DataFrame is named training_labels
+
+# Subset the DataFrame into two groups: label == 0 and label == 1
+label_0 <- training_labels[training_labels$label == 0, ]
+label_1 <- training_labels[training_labels$label == 1, ]
+
+# Randomly sample 500 rows from each group
+set.seed(123)  # For reproducibility
+sampled_label_0 <- label_0[sample(nrow(label_0), 500), ]
+sampled_label_1 <- label_1[sample(nrow(label_1), 500), ]
+
+# Combine the sampled subsets into a single DataFrame
+sampled_training_labels <- rbind(sampled_label_0, sampled_label_1)
+
+# Renaming column and obs names to match image format
+sampled_training_labels <- sampled_training_labels |> 
+  rename(image_name = clip_name) |> 
+  mutate(image_name = sub("\\.aiff$", ".png", image_name))
+
+
+write.csv(sampled_training_labels, "data/archive/kaggle/working/train.csv", row.names = FALSE)
+
+# View the new DataFrame
+head(sampled_training_labels)
+
+```
+
+Below we delete the images in our data directory that do not have a label observation in our filtered subset dataframe.
+
+```{r}
+
+# Set the working directory to where the .png files and train.csv are located
+setwd("data/archive/kaggle/working/")
+
+# Read the train.csv file
+train_df <- read.csv("train.csv")
+
+# Extract the list of image names from train.csv
+image_files_to_keep <- train_df$image_name  # Adjust column name if necessary
+
+# Get the list of all .png files in the current directory
+all_png_files <- list.files(pattern = "\\.png$")
+
+# Identify files to delete (not in train.csv)
+files_to_delete <- setdiff(all_png_files, image_files_to_keep)
+
+# Delete the unwanted .png files
+if (length(files_to_delete) > 0) {
+  file.remove(files_to_delete)
+  message(length(files_to_delete), " files deleted.")
+} else {
+  message("No files to delete.")
+}
+
+```
