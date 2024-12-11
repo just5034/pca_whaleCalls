@@ -1,0 +1,101 @@
+---
+title: "Data Preprocessing Pipeline"
+editor: visual
+---
+
+```{r, include=FALSE}
+
+library(png)
+library(ggplot2)
+library(dplyr)
+library(imager)
+
+
+
+set.seed(123)
+
+
+setwd("../data")
+
+file_paths <- read.csv("train.csv")
+
+sampled_file_paths <- file_paths |> 
+  group_by(label) |> 
+  slice_sample(n=30) |> 
+  ungroup()
+
+sampled_file_paths$image_name <- apply(sampled_file_paths, 1, function(row) {
+  paste0("../data/", row["image_name"])
+})
+
+# Directory containing the PNG files
+image_dir <- "../data" # Replace with your folder path
+image_files <- list.files(image_dir, pattern = "\\.png$", full.names = TRUE)
+
+
+# Initialize a list to store image pixel vectors
+image_data <- list()
+
+# Process each image file
+for (i in seq_len(nrow(sampled_file_paths))) {
+  tryCatch({
+    # Load the image
+    img_path <- sampled_file_paths[i,1]
+    image <- load.image(img_path[[1,1]])
+    image <- as.array(image)
+    
+    # Remove the fourth channel (assumes RGBA input)
+    image <- image[,,,1:3]
+    
+    image_cimg <- as.cimg(image)
+    
+    gray_image <- grayscale(image_cimg)
+    
+    # Flatten the grayscale image into a vector and store in the list
+    image_data[[i]] <- as.vector(gray_image)
+  }, error = function(e) {
+    # Log the error and skip the problematic file
+    warning("Error processing file: ", file, "\n", conditionMessage(e))
+  })
+}
+
+# Combine all vectors into a matrix (each row is an image)
+if (length(image_data) > 0) {
+  image_matrix <- do.call(rbind, image_data)
+  # Print the dimensions of the resulting matrix
+  cat("The resulting image matrix has dimensions:", dim(image_matrix), "\n")
+} else {
+  cat("No valid images processed.\n")
+}
+
+# write.csv(image_matrix, "image_matrix.csv", row.names = FALSE)
+
+```
+
+
+```{r}
+
+# Assuming `image_matrix` is your image matrix
+# Dimensions of the original image
+image_height <- 255
+image_width <- 255
+
+# Function to process and transpose each image
+process_image <- function(image_vector) {
+  # Reshape the vector into a matrix (transposing in the process)
+  image_matrix <- matrix(image_vector, nrow = image_width, ncol = image_height, byrow = FALSE)
+  return(as.vector(image_matrix))  # Flatten back into a vector
+}
+
+# Apply the transpose fix to all rows (images) in the image matrix
+fixed_image_matrix <- t(apply(image_matrix, 1, process_image))
+
+# Optional: Display the first image from the fixed matrix
+first_image_vector <- fixed_image_matrix[31, ]
+first_image_matrix <- matrix(first_image_vector, nrow = image_width, ncol = image_height, byrow = FALSE)
+first_image_cimg <- as.cimg(first_image_matrix)
+
+# Display the corrected first image
+plot(first_image_cimg, main = "Corrected First Image")
+
+```
