@@ -10,8 +10,6 @@ library(ggplot2)
 library(dplyr)
 library(imager)
 
-
-
 set.seed(123)
 
 
@@ -98,6 +96,9 @@ first_image_cimg <- as.cimg(first_image_matrix)
 plot(first_image_cimg, main = "Corrected First Image")
 
 ```
+
+
+
 ```{r}
 
 matrix_copy <- image_matrix

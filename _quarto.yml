@@ -11,8 +11,8 @@ execute:
 book:
   title: "Principal Component Denoising (Whale Calls)"
   author:
-    - Justin Kim (UNI1)
-    - Kshitij Patil (UNI2)
+    - Justin Kim (jjk2266)
+    - Kshitij Patil (kp3113)
   repo-url: https://github.com/just5034/pca_whaleCalls
   date: today
   page-footer:

@@ -1,1 +1,615 @@
 # Results
+
+Below we present the application and analysis of our denoising algorithm on a smaller subset of the isolated dataset described in the data section of our write-up. We settled on 30 observations from each of the two labels, with 60 total in the subset for size limitations and purposes.
+
+
+#### The Idea
+
+Intuitively, our algorithm that we present below is isolating the signal components that are used to construct the original data matrix and denoising these signal components separately. Only then, do we reconstruct the original data matrix and conduct a standard column-wise median denoising. This way, any time-periodic fully invasive interference can be handled in an isolated fashion so as to preserve signal shape while providing a competent level of denoising.
+
+#### The Algorithm
+
+We approach the denoising process as follows:
+
+The denoising algorithm implemented in this analysis combines Principal Component Analysis (PCA) with a novel column-wise thresholding technique. The process can be broken down into several key steps.
+
+##### 1. Initial Decomposition
+
+We apply PCAA through Singular Value Decomposition to decompose the image matrix. Said decomposition yields three matrices, of which we are primarily concerned with the right-most containing the singular codomain vectors. The transpose of this matrix, call it V, represents the "building blocks" of our images. More specifically, the rows of $V^T$ can be reshapedd into the n = 2 dimensional singular basis vectors used to reconstruct our original dataset.
+
+
+##### 2. Column-wise Thresholding
+
+For each principal component image (rows of $V^T$), our algorithm:
+
+- Reshapes the flattened vector into a 255 x 255 matrix (representative of it's image vector form)
+
+- Processes each column independently
+
+- Applies one of three thresholding approaches (median subtraction, 25th percentile subtraction, and 75th percentile subtraction)
+
+Any negative values resulting from the subtraction are set to 0. Then the processed matrix is flattened back into a row vector of the matrix $V^T$.
+
+##### 3. Image Reconstruction
+
+The processed $V^T$ matrix is used with the other 2 original matrices to reconstruct the original dataset. This reconstruction maintains the global structure while incorporating the denoising effects. Then we apply a final median value column-wise subtraction to the reconstructed images.
+
+
+Below we provide an example of an image with a whale call signal before and after our denoising method (in particular, an iteration of a denoising path using median singular component thresholding).
+
+
+
+```{r, include=FALSE}
+
+library(gridExtra)
+library(png)
+library(ggplot2)
+library(dplyr)
+library(imager)
+library(tidyr)
+
+set.seed(123)
+
+file_paths <- read.csv("data/train.csv")
+
+sampled_file_paths <- file_paths |> 
+  group_by(label) |> 
+  slice_sample(n=30) |> 
+  ungroup()
+
+sampled_file_paths$image_name <- apply(sampled_file_paths, 1, function(row) {
+  paste0("data/", row["image_name"])
+})
+
+# Initialize a list to store image pixel vectors
+image_data <- list()
+
+# Process each image file
+for (i in seq_len(nrow(sampled_file_paths))) {
+  tryCatch({
+    # Load the image
+    img_path <- sampled_file_paths[i,1]
+    image <- load.image(img_path[[1,1]])
+    image <- as.array(image)
+    
+    # Remove the fourth channel (assumes RGBA input)
+    image <- image[,,,1:3]
+    
+    image_cimg <- as.cimg(image)
+    
+    gray_image <- grayscale(image_cimg)
+    
+    # Flatten the grayscale image into a vector and store in the list
+    image_data[[i]] <- as.vector(gray_image)
+  }, error = function(e) {
+    # Log the error and skip the problematic file
+    warning("Error processing file: ", file, "\n", conditionMessage(e))
+  })
+}
+
+# Combine all vectors into a matrix (each row is an image)
+if (length(image_data) > 0) {
+  image_matrix <- do.call(rbind, image_data)
+  # Print the dimensions of the resulting matrix
+  cat("The resulting image matrix has dimensions:", dim(image_matrix), "\n")
+} else {
+  cat("No valid images processed.\n")
+}
+
+# write.csv(image_matrix, "image_matrix.csv", row.names = FALSE)
+
+```
+
+
+```{r}
+
+matrix_copy <- image_matrix
+
+centered_matrix <- scale(matrix_copy, center = TRUE, scale = FALSE)
+
+svd_result <- svd(centered_matrix)
+
+U <- svd_result$u
+
+V <- svd_result$v
+
+D <- svd_result$d
+
+D_matrix <- diag(D)
+
+eigenvalues <- D^2
+
+pc_images <- t(svd_result$v)
+
+reconstruction <- U %*% D_matrix %*% pc_images
+
+```
+
+
+```{r}
+
+# Function to process a single 255x255 matrix
+process_matrix <- function(flat_vector, percentile_func) {
+  # Reshape to 255x255
+  img_matrix <- matrix(flat_vector, nrow=255, ncol=255)
+  
+  # Process each column
+  for(j in 1:255) {
+    thresh_val <- percentile_func(img_matrix[,j])
+    # Subtract threshold value and cap at 0
+    img_matrix[,j] <- pmax(img_matrix[,j] - thresh_val, 0)
+  }
+  
+  # Return flattened processed matrix
+  return(as.vector(img_matrix))
+}
+
+
+# Apply to each row of pc_images
+
+processed_pc_images_median <- matrix(0, nrow=60, ncol=65025)
+
+processed_pc_images_25th <- matrix(0, nrow=60, ncol=65025)
+
+processed_pc_images_75th <- matrix(0, nrow=60, ncol=65025)
+
+
+for(i in 1:60) {
+  processed_pc_images_median[i,] <- process_matrix(pc_images[i,], median)
+  
+  processed_pc_images_25th[i,] <- process_matrix(pc_images[i,], function(x) quantile(x, 0.25))
+  
+  processed_pc_images_75th[i,] <- process_matrix(pc_images[i,], function(x) quantile(x, 0.75))
+}
+
+reconstruction_median <- svd_result$u %*% D_matrix %*% processed_pc_images_median
+reconstruction_25th <- svd_result$u %*% D_matrix %*% processed_pc_images_25th
+reconstruction_75th <- svd_result$u %*% D_matrix %*% processed_pc_images_75th
+
+
+
+# Function to apply median subtraction to a matrix
+apply_median_subtraction <- function(flat_matrix) {
+  # Reshape each row to 255x255, process, and flatten back
+  processed_matrix <- matrix(0, nrow=nrow(flat_matrix), ncol=ncol(flat_matrix))
+  
+  for(i in 1:nrow(flat_matrix)) {
+    # Reshape to 255x255
+    img_matrix <- matrix(flat_matrix[i,], nrow=255, ncol=255)
+    
+    # Process each column
+    for(j in 1:255) {
+      col_median <- median(img_matrix[,j])
+      # Subtract median and cap at 0
+      img_matrix[,j] <- pmax(img_matrix[,j] - col_median, 0)
+    }
+    
+    # Flatten and store
+    processed_matrix[i,] <- as.vector(img_matrix)
+  }
+  
+  return(processed_matrix)
+}
+
+# Apply to each reconstruction
+final_median <- apply_median_subtraction(reconstruction_median)
+final_25th <- apply_median_subtraction(reconstruction_25th)
+final_75th <- apply_median_subtraction(reconstruction_75th)
+
+```
+
+
+```{r}
+image_width = 255
+image_height = 255
+
+first_image_vector <- reconstruction[31, ]
+first_image_matrix <- matrix(first_image_vector, nrow = image_width, ncol = image_height, byrow = FALSE)
+first_image_cimg <- as.cimg(first_image_matrix)
+
+# Display the corrected first image
+plot(first_image_cimg, main = "Before Denoising")
+
+```
+
+```{r}
+
+first_image_vector <- final_median[31, ]
+first_image_matrix <- matrix(first_image_vector, nrow = image_width, ncol = image_height, byrow = FALSE)
+first_image_cimg <- as.cimg(first_image_matrix)
+
+# Display the corrected first image
+plot(first_image_cimg, main = "After Denoising")
+
+```
+
+As we can see, to the human eye, the signal appears to be more isolated and in a cleaner, noiseless environment. However, we seek to analyze the performance of our denoising algorithm iterations objectively and compare them. Therefore we require an objective measurement for spectrogram image quality post processing, and to this end we use the traditional Signal-to-Noise ratio and Structural Similarity Index Measure metrics to gauge performance.
+
+Signal-to-Noise Ratio is calculated as:
+
+$$
+\text{SNR} = 10 \cdot \log_{10}\left(\frac{P_{\text{signal}}}{P_{\text{noise}}}\right)
+$$
+
+where
+
+$$
+P_{\text{signal}} = \frac{1}{N}\sum_{i=1}^{N} x_i^2
+$$
+
+$$
+P_{\text{noise}} = \frac{1}{N}\sum_{i=1}^{N} (x_i - y_i)^2
+$$
+Intuitively, SNR measures how much signal dominates over the background noise in an image. A higher SNR value generally means a signal is more prominent and distinguishable from the noise in the background, and therefore the denoising algorithm had a higher efficacy.
+
+Structural Similarity Index Measure (SSIM) is calculated to be
+
+$$
+\text{SSIM}(x,y) = \frac{(2\mu_x\mu_y + c_1)(2\sigma_{xy} + c_2)}{(\mu_x^2 + \mu_y^2 + c_1)(\sigma_x^2 + \sigma_y^2 + c_2)}
+$$
+
+where
+
+$$
+\mu_x = \frac{1}{N}\sum_{i=1}^{N} x_i
+$$
+
+$$
+\sigma_x^2 = \frac{1}{N-1}\sum_{i=1}^{N} (x_i - \mu_x)^2
+$$
+
+$$
+\sigma_{xy} = \frac{1}{N-1}\sum_{i=1}^{N} (x_i - \mu_x)(y_i - \mu_y)
+$$
+
+SSIM measures how similar two images are in terms of their structure rather than just pixel by pixel differences. In order to ensure we preserve as much relevant signal structure as possible in the new image using our algorithm, we use this metric to gauge the proportion of the original structure preserved (values range from 0 to 1 where 1 is near perfect structure preservation).
+
+
+These two metrics are calculated for each observation across all three methods and stored in separate dataframes for the purposes of exploring the state of the data as well as the performance of our algorithm below.
+
+#### Performance Analysis
+
+We first graph histograms of the SNR and SSIM for each of the three thresholding intensities to observe the distribution of the data post hoc.
+
+
+```{r}
+
+# # Function to calculate SNR
+# calculate_snr <- function(original, processed) {
+#   signal_power <- mean(original^2)
+#   noise_power <- mean((original - processed)^2)
+#   snr <- 10 * log10(signal_power/noise_power)
+#   return(snr)
+# }
+# 
+# # Helper functions for SSIM
+# calculate_mean <- function(window) {
+#   return(mean(window))
+# }
+# 
+# calculate_variance <- function(window) {
+#   return(mean((window - mean(window))^2))
+# }
+# 
+# calculate_covariance <- function(window1, window2) {
+#   return(mean((window1 - mean(window1)) * (window2 - mean(window2))))
+# }
+# 
+# # Function to calculate SSIM for a single window
+# calculate_window_ssim <- function(window1, window2, k1 = 0.01, k2 = 0.03, L = 255) {
+#   # Constants
+#   c1 <- (k1 * L)^2
+#   c2 <- (k2 * L)^2
+#   
+#   # Calculate statistics
+#   mu1 <- calculate_mean(window1)
+#   mu2 <- calculate_mean(window2)
+#   sigma1_sq <- calculate_variance(window1)
+#   sigma2_sq <- calculate_variance(window2)
+#   sigma12 <- calculate_covariance(window1, window2)
+#   
+#   # Calculate SSIM
+#   numerator <- (2 * mu1 * mu2 + c1) * (2 * sigma12 + c2)
+#   denominator <- (mu1^2 + mu2^2 + c1) * (sigma1_sq + sigma2_sq + c2)
+#   
+#   return(numerator/denominator)
+# }
+# 
+# # Function to calculate SSIM for entire image
+# calculate_ssim <- function(original, processed, window_size = 11) {
+#   # Reshape to 255x255 matrices
+#   orig_mat <- matrix(original, nrow=255, ncol=255)
+#   proc_mat <- matrix(processed, nrow=255, ncol=255)
+#   
+#   ssim_values <- c()
+#   
+#   # Calculate SSIM for each window
+#   for(i in 1:(255-window_size+1)) {
+#     for(j in 1:(255-window_size+1)) {
+#       window1 <- orig_mat[i:(i+window_size-1), j:(j+window_size-1)]
+#       window2 <- proc_mat[i:(i+window_size-1), j:(j+window_size-1)]
+#       ssim_values <- c(ssim_values, calculate_window_ssim(window1, window2))
+#     }
+#   }
+#   
+#   # Return mean SSIM
+#   return(mean(ssim_values))
+# }
+# 
+# # Create empty dataframes for each percentile
+# metrics_median <- data.frame(
+#   image_index = 1:60,
+#   snr = numeric(60),
+#   ssim = numeric(60)
+# )
+# 
+# metrics_25th <- data.frame(
+#   image_index = 1:60,
+#   snr = numeric(60),
+#   ssim = numeric(60)
+# )
+# 
+# metrics_75th <- data.frame(
+#   image_index = 1:60,
+#   snr = numeric(60),
+#   ssim = numeric(60)
+# )
+# 
+# # Calculate metrics for each image in each version
+# for(i in 1:60) {
+#   # For median version
+#   metrics_median$snr[i] <- calculate_snr(centered_matrix[i,], final_median[i,])
+#   metrics_median$ssim[i] <- calculate_ssim(centered_matrix[i,], final_median[i,])
+#   
+#   # For 25th percentile version
+#   metrics_25th$snr[i] <- calculate_snr(centered_matrix[i,], final_25th[i,])
+#   metrics_25th$ssim[i] <- calculate_ssim(centered_matrix[i,], final_25th[i,])
+#   
+#   # For 75th percentile version
+#   metrics_75th$snr[i] <- calculate_snr(centered_matrix[i,], final_75th[i,])
+#   metrics_75th$ssim[i] <- calculate_ssim(centered_matrix[i,], final_75th[i,])
+#   
+#   # Print progress
+#   if(i %% 10 == 0) {
+#     print(paste("Processed", i, "images"))
+#   }
+# }
+
+```
+
+```{r}
+
+# write.csv(metrics_median, "../data/metrics_median.csv", row.names = FALSE)
+# write.csv(metrics_25th, "../data/metrics_25th.csv", row.names = FALSE)
+# write.csv(metrics_75th, "../data/metrics_75th.csv", row.names = FALSE)
+
+metrics_median <- read.csv("data/metrics_median.csv")
+metrics_25th <- read.csv("data/metrics_25th.csv")
+metrics_75th <- read.csv("data/metrics_75th.csv")
+
+```
+
+```{r}
+
+# SNR and SSIM histograms for each method arranged by rows
+# Median row
+p1 <- ggplot(metrics_median, aes(x=snr)) + 
+  geom_histogram(fill="skyblue", bins=10) +
+  scale_x_continuous(breaks = seq(floor(min(metrics_median$snr)), ceiling(max(metrics_median$snr)), by=0.5)) +
+  ggtitle("Median: SNR") +
+  theme_minimal()
+
+p2 <- ggplot(metrics_median, aes(x=ssim)) + 
+  geom_histogram(fill="skyblue", bins=10) +
+  scale_x_continuous(breaks = seq(round(min(metrics_median$ssim), 4), round(max(metrics_median$ssim), 4), by=0.0025)) +
+  ggtitle("Median: SSIM") +
+  theme_minimal()
+
+# 25th Percentile row
+p3 <- ggplot(metrics_25th, aes(x=snr)) + 
+  geom_histogram(fill="lightgreen", bins=10) +
+  scale_x_continuous(breaks = seq(floor(min(metrics_25th$snr)), ceiling(max(metrics_25th$snr)), by=0.5)) +
+  ggtitle("25th Percentile: SNR") +
+  theme_minimal()
+
+p4 <- ggplot(metrics_25th, aes(x=ssim)) + 
+  geom_histogram(fill="lightgreen", bins=10) +
+  scale_x_continuous(breaks = seq(round(min(metrics_25th$ssim), 4), round(max(metrics_25th$ssim), 4), by=0.0025)) +
+  ggtitle("25th Percentile: SSIM") +
+  theme_minimal()
+
+# 75th Percentile row
+p5 <- ggplot(metrics_75th, aes(x=snr)) + 
+  geom_histogram(fill="salmon", bins=10) +
+  scale_x_continuous(breaks = seq(floor(min(metrics_75th$snr)), ceiling(max(metrics_75th$snr)), by=0.5)) +
+  ggtitle("75th Percentile: SNR") +
+  theme_minimal()
+
+p6 <- ggplot(metrics_75th, aes(x=ssim)) + 
+  geom_histogram(fill="salmon", bins=10) +
+  scale_x_continuous(breaks = seq(round(min(metrics_75th$ssim), 4), round(max(metrics_75th$ssim), 4), by=0.0025)) +
+  ggtitle("75th Percentile: SSIM") +
+  theme_minimal()
+
+# Arrange plots with methods in rows
+grid.arrange(p1, p3, p5, p2, p4, p6, nrow=2)
+
+```
+
+As we can see, all three methods tend to display the potential presence of two subpopulations in the data when SNR is calculated while the SSIM values gauging signal preservation seem relatively unimodal and consistent between the three methods. We suspected the bimodal nature of the SNR distributions for all strengths to be attributed to the labels in the data (whether an image contains a signal or not) and therefore overlayed new histograms to observe if grouping by label would procure a suggested answer for what is causing this shape. Note that in our data matrix, by our preprocessing methods, the FIRST 30 observations had no signal (label = 0) and the LAST 30 observations contained a signal (label = 1).
+
+
+```{r}
+
+create_split_histograms <- function(data, title_prefix) {
+  # Split data
+  first30 <- data[1:30,]
+  last30 <- data[31:60,]
+  
+  # SNR plot with aligned breaks
+  p1 <- ggplot() + 
+    geom_histogram(data=first30, aes(x=snr, fill="First 30"), bins=15, alpha=0.6) +
+    geom_histogram(data=last30, aes(x=snr, fill="Last 30"), bins=15, alpha=0.6) +
+    scale_fill_manual(values=c("First 30"="skyblue", "Last 30"="salmon")) +
+    scale_x_continuous(breaks = seq(floor(min(data$snr)), ceiling(max(data$snr)), by=0.5)) +
+    ggtitle(paste(title_prefix, "- SNR")) +
+    theme_minimal() +
+    labs(fill="Group")
+
+  # SSIM plot with aligned breaks
+  p2 <- ggplot() + 
+    geom_histogram(data=first30, aes(x=ssim, fill="First 30"), bins=15, alpha=0.6) +
+    geom_histogram(data=last30, aes(x=ssim, fill="Last 30"), bins=15, alpha=0.6) +
+    scale_fill_manual(values=c("First 30"="skyblue", "Last 30"="salmon")) +
+    scale_x_continuous(breaks = seq(round(min(data$ssim), 4), round(max(data$ssim), 4), by=0.0025)) +
+    ggtitle(paste(title_prefix, "- SSIM")) +
+    theme_minimal() +
+    labs(fill="Group")
+    
+  return(list(p1, p2))
+}
+
+# Create plots for each percentile
+median_plots <- create_split_histograms(metrics_median, "Median")
+p25_plots <- create_split_histograms(metrics_25th, "25th Percentile")
+p75_plots <- create_split_histograms(metrics_75th, "75th Percentile")
+
+# Arrange all plots in a grid
+grid.arrange(
+  median_plots[[1]], median_plots[[2]],
+  p25_plots[[1]], p25_plots[[2]],
+  p75_plots[[1]], p75_plots[[2]],
+  ncol=2
+)
+
+```
+
+As we can see, it is at least virtually clear that the distribution for signal-containing images across all denoising intensities procured a shape with higher SNR center value than that of the images with no signals. This, while we have not yet tested statistically for certain whether the difference is significant, makes sense because our SNR calculation procures values of near 0 for multiple reasons, one of which being that there is no high intensity pixel value in the post-hoc image to inflate the numerator of the calculation. Judging by our SSIM distributions for all three intensities, since the data tends extremely towards 1, we can say that the structural integrity of our signals is fairly well preserved on an objective level. We draw similar conclusions based on the boxplots given below.
+
+```{r}
+
+# Function to prepare data
+prepare_data <- function(df, method_name) {
+  df$Method <- method_name
+  df$Group <- ifelse(df$image_index <= 30, "No Signal", "Signal")
+  return(df)
+}
+
+# Combine all data
+all_data <- rbind(
+  prepare_data(metrics_median, "Median"),
+  prepare_data(metrics_25th, "25th Percentile"),
+  prepare_data(metrics_75th, "75th Percentile")
+)
+
+# Create SNR boxplot
+p1 <- ggplot(all_data, aes(x=Method, y=snr, fill=Group)) +
+  geom_boxplot() +
+  ggtitle("SNR Distribution by Method and Group") +
+  theme_minimal() +
+  scale_fill_manual(values=c("No Signal"="skyblue", "Signal"="salmon")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Create SSIM boxplot
+p2 <- ggplot(all_data, aes(x=Method, y=ssim, fill=Group)) +
+  geom_boxplot() +
+  ggtitle("SSIM Distribution by Method and Group") +
+  theme_minimal() +
+  scale_fill_manual(values=c("No Signal"="skyblue", "Signal"="salmon")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Arrange plots
+grid.arrange(p1, p2, ncol=2)
+
+
+```
+
+Next, observe the results of difference in mean hypothesis tests for the signal vs no-signal distribution centers across all three intensities. In every case, we reject the null that there is no significant difference between signal containing images and their anitheses observations. Further, we conduct an ANOVA test to determine the presence of a difference in performance between the denoising intensities. We find that the SNR calculations are significantly different between all 3 methods but SSIM is generally indistinguishable on average. More specifically, the 25th percentile intensity appears to be more objectively powerful at creating a distinguishing barrier between signal and noise in an image.
+
+```{r}
+
+# T-tests for Signal vs No Signal in each method
+# For Median method
+t_med_snr <- t.test(snr ~ Group, data=subset(all_data, Method=="Median"))
+t_med_ssim <- t.test(ssim ~ Group, data=subset(all_data, Method=="Median"))
+
+# For 25th Percentile
+t_25_snr <- t.test(snr ~ Group, data=subset(all_data, Method=="25th Percentile"))
+t_25_ssim <- t.test(ssim ~ Group, data=subset(all_data, Method=="25th Percentile"))
+
+# For 75th Percentile
+t_75_snr <- t.test(snr ~ Group, data=subset(all_data, Method=="75th Percentile"))
+t_75_ssim <- t.test(ssim ~ Group, data=subset(all_data, Method=="75th Percentile"))
+
+# ANOVA to compare methods
+snr_anova <- aov(snr ~ Method, data=all_data)
+ssim_anova <- aov(ssim ~ Method, data=all_data)
+
+# Print results
+cat("T-test results for Signal vs No Signal:\n\n")
+cat("Median Method:\n")
+cat("SNR: p-value =", t_med_snr$p.value, "\n")
+cat("SSIM: p-value =", t_med_ssim$p.value, "\n\n")
+
+cat("25th Percentile Method:\n")
+cat("SNR: p-value =", t_25_snr$p.value, "\n")
+cat("SSIM: p-value =", t_25_ssim$p.value, "\n\n")
+
+cat("75th Percentile Method:\n")
+cat("SNR: p-value =", t_75_snr$p.value, "\n")
+cat("SSIM: p-value =", t_75_ssim$p.value, "\n\n")
+
+cat("ANOVA results comparing methods:\n")
+cat("SNR: ")
+summary(snr_anova)
+cat("\nSSIM: ")
+summary(ssim_anova)
+
+```
+
+One more interesting visualization we offer is a scatter plot (for each percentile method) comparing the values of the calculated SNR vs the SSIM. Observe that there is a positive correlation between SNR and SSIM up to a certain threshold after which there is a logistic leveling effect. Signal groups tend to cluster in the upper-right quadrant of the graph region (high SNR, high SSIM) whereas no signal groups show more variability / dispersion in both metrics.
+
+```{r}
+
+# Create scatter plots for each percentile method
+p1 <- ggplot() + 
+  geom_point(data=metrics_median, aes(x=snr, y=ssim, color=ifelse(image_index <= 30, "No Signal", "Signal")), size=3, alpha=0.6) +
+  ggtitle("Median: SNR vs SSIM") +
+  scale_color_manual(values=c("No Signal"="skyblue", "Signal"="salmon")) +
+  theme_minimal() +
+  labs(color="Group")
+
+p2 <- ggplot() + 
+  geom_point(data=metrics_25th, aes(x=snr, y=ssim, color=ifelse(image_index <= 30, "No Signal", "Signal")), size=3, alpha=0.6) +
+  ggtitle("25th Percentile: SNR vs SSIM") +
+  scale_color_manual(values=c("No Signal"="skyblue", "Signal"="salmon")) +
+  theme_minimal() +
+  labs(color="Group")
+
+p3 <- ggplot() + 
+  geom_point(data=metrics_75th, aes(x=snr, y=ssim, color=ifelse(image_index <= 30, "No Signal", "Signal")), size=3, alpha=0.6) +
+  ggtitle("75th Percentile: SNR vs SSIM") +
+  scale_color_manual(values=c("No Signal"="skyblue", "Signal"="salmon")) +
+  theme_minimal() +
+  labs(color="Group")
+
+# Arrange plots
+grid.arrange(p1, p2, p3, ncol=2)
+
+```
+
+
+```{r}
+# # Combine and prepare the data
+# combined_metrics <- rbind(
+#   transform(metrics_median, method = "Median"),
+#   transform(metrics_25th, method = "25th Percentile"),
+#   transform(metrics_75th, method = "75th Percentile")
+# )
+# combined_metrics$group <- ifelse(combined_metrics$image_index <= 30, "No Signal", "Signal")
+# 
+# # Export to JSON
+# library(jsonlite)
+# json_data <- toJSON(combined_metrics, pretty=TRUE)
+# writeLines(json_data, "metrics_data.json")
+```
