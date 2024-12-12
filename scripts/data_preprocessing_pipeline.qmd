@@ -279,6 +279,384 @@ plot(first_image_cimg, main = "Corrected First Image")
 
 ```
 
+```{r}
+
+# Function to calculate SNR
+calculate_snr <- function(original, processed) {
+  signal_power <- mean(original^2)
+  noise_power <- mean((original - processed)^2)
+  snr <- 10 * log10(signal_power/noise_power)
+  return(snr)
+}
+
+# Helper functions for SSIM
+calculate_mean <- function(window) {
+  return(mean(window))
+}
+
+calculate_variance <- function(window) {
+  return(mean((window - mean(window))^2))
+}
+
+calculate_covariance <- function(window1, window2) {
+  return(mean((window1 - mean(window1)) * (window2 - mean(window2))))
+}
+
+# Function to calculate SSIM for a single window
+calculate_window_ssim <- function(window1, window2, k1 = 0.01, k2 = 0.03, L = 255) {
+  # Constants
+  c1 <- (k1 * L)^2
+  c2 <- (k2 * L)^2
+  
+  # Calculate statistics
+  mu1 <- calculate_mean(window1)
+  mu2 <- calculate_mean(window2)
+  sigma1_sq <- calculate_variance(window1)
+  sigma2_sq <- calculate_variance(window2)
+  sigma12 <- calculate_covariance(window1, window2)
+  
+  # Calculate SSIM
+  numerator <- (2 * mu1 * mu2 + c1) * (2 * sigma12 + c2)
+  denominator <- (mu1^2 + mu2^2 + c1) * (sigma1_sq + sigma2_sq + c2)
+  
+  return(numerator/denominator)
+}
+
+# Function to calculate SSIM for entire image
+calculate_ssim <- function(original, processed, window_size = 11) {
+  # Reshape to 255x255 matrices
+  orig_mat <- matrix(original, nrow=255, ncol=255)
+  proc_mat <- matrix(processed, nrow=255, ncol=255)
+  
+  ssim_values <- c()
+  
+  # Calculate SSIM for each window
+  for(i in 1:(255-window_size+1)) {
+    for(j in 1:(255-window_size+1)) {
+      window1 <- orig_mat[i:(i+window_size-1), j:(j+window_size-1)]
+      window2 <- proc_mat[i:(i+window_size-1), j:(j+window_size-1)]
+      ssim_values <- c(ssim_values, calculate_window_ssim(window1, window2))
+    }
+  }
+  
+  # Return mean SSIM
+  return(mean(ssim_values))
+}
+
+# Create empty dataframes for each percentile
+metrics_median <- data.frame(
+  image_index = 1:60,
+  snr = numeric(60),
+  ssim = numeric(60)
+)
+
+metrics_25th <- data.frame(
+  image_index = 1:60,
+  snr = numeric(60),
+  ssim = numeric(60)
+)
+
+metrics_75th <- data.frame(
+  image_index = 1:60,
+  snr = numeric(60),
+  ssim = numeric(60)
+)
+
+# Calculate metrics for each image in each version
+for(i in 1:60) {
+  # For median version
+  metrics_median$snr[i] <- calculate_snr(centered_matrix[i,], final_median[i,])
+  metrics_median$ssim[i] <- calculate_ssim(centered_matrix[i,], final_median[i,])
+  
+  # For 25th percentile version
+  metrics_25th$snr[i] <- calculate_snr(centered_matrix[i,], final_25th[i,])
+  metrics_25th$ssim[i] <- calculate_ssim(centered_matrix[i,], final_25th[i,])
+  
+  # For 75th percentile version
+  metrics_75th$snr[i] <- calculate_snr(centered_matrix[i,], final_75th[i,])
+  metrics_75th$ssim[i] <- calculate_ssim(centered_matrix[i,], final_75th[i,])
+  
+  # Print progress
+  if(i %% 10 == 0) {
+    print(paste("Processed", i, "images"))
+  }
+}
+
+```
+
+
+```{r}
+
+write.csv(metrics_median, "../data/metrics_median.csv", row.names = FALSE)
+write.csv(metrics_25th, "../data/metrics_25th.csv", row.names = FALSE)
+write.csv(metrics_75th, "../data/metrics_75th.csv", row.names = FALSE)
+
+```
+
+
+```{r}
+
+# Load ggplot2 if not already loaded
+library(ggplot2)
+
+# SNR and SSIM histograms for each method arranged by rows
+# Median row
+p1 <- ggplot(metrics_median, aes(x=snr)) + 
+  geom_histogram(fill="skyblue", bins=10) +
+  scale_x_continuous(breaks = seq(floor(min(metrics_median$snr)), ceiling(max(metrics_median$snr)), by=0.5)) +
+  ggtitle("Median: SNR Distribution") +
+  theme_minimal()
+
+p2 <- ggplot(metrics_median, aes(x=ssim)) + 
+  geom_histogram(fill="skyblue", bins=10) +
+  scale_x_continuous(breaks = seq(round(min(metrics_median$ssim), 4), round(max(metrics_median$ssim), 4), by=0.0025)) +
+  ggtitle("Median: SSIM Distribution") +
+  theme_minimal()
+
+# 25th Percentile row
+p3 <- ggplot(metrics_25th, aes(x=snr)) + 
+  geom_histogram(fill="lightgreen", bins=10) +
+  scale_x_continuous(breaks = seq(floor(min(metrics_25th$snr)), ceiling(max(metrics_25th$snr)), by=0.5)) +
+  ggtitle("25th Percentile: SNR Distribution") +
+  theme_minimal()
+
+p4 <- ggplot(metrics_25th, aes(x=ssim)) + 
+  geom_histogram(fill="lightgreen", bins=10) +
+  scale_x_continuous(breaks = seq(round(min(metrics_25th$ssim), 4), round(max(metrics_25th$ssim), 4), by=0.0025)) +
+  ggtitle("25th Percentile: SSIM Distribution") +
+  theme_minimal()
+
+# 75th Percentile row
+p5 <- ggplot(metrics_75th, aes(x=snr)) + 
+  geom_histogram(fill="salmon", bins=10) +
+  scale_x_continuous(breaks = seq(floor(min(metrics_75th$snr)), ceiling(max(metrics_75th$snr)), by=0.5)) +
+  ggtitle("75th Percentile: SNR Distribution") +
+  theme_minimal()
+
+p6 <- ggplot(metrics_75th, aes(x=ssim)) + 
+  geom_histogram(fill="salmon", bins=10) +
+  scale_x_continuous(breaks = seq(round(min(metrics_75th$ssim), 4), round(max(metrics_75th$ssim), 4), by=0.0025)) +
+  ggtitle("75th Percentile: SSIM Distribution") +
+  theme_minimal()
+
+# Arrange plots with methods in rows
+grid.arrange(p1, p3, p5, p2, p4, p6, nrow=2)
+
+```
+
+```{r}
+
+# Create separate plots for first and last 30 observations for each metric and percentile
+library(ggplot2)
+library(gridExtra)
+
+# Function to create split histograms for a dataset
+create_split_histograms <- function(data, title_prefix) {
+  # Split data
+  first30 <- data[1:30,]
+  last30 <- data[31:60,]
+  
+  # SNR plot
+  p1 <- ggplot() + 
+    geom_histogram(data=first30, aes(x=snr, fill="First 30"), bins=10, alpha=0.6) +
+    geom_histogram(data=last30, aes(x=snr, fill="Last 30"), bins=10, alpha=0.6) +
+    scale_fill_manual(values=c("First 30"="skyblue", "Last 30"="salmon")) +
+    ggtitle(paste(title_prefix, "- SNR")) +
+    theme_minimal() +
+    labs(fill="Group")
+
+  # SSIM plot
+  p2 <- ggplot() + 
+    geom_histogram(data=first30, aes(x=ssim, fill="First 30"), bins=10, alpha=0.6) +
+    geom_histogram(data=last30, aes(x=ssim, fill="Last 30"), bins=10, alpha=0.6) +
+    scale_fill_manual(values=c("First 30"="skyblue", "Last 30"="salmon")) +
+    ggtitle(paste(title_prefix, "- SSIM")) +
+    theme_minimal() +
+    labs(fill="Group")
+    
+  return(list(p1, p2))
+}
+
+# Create plots for each percentile
+median_plots <- create_split_histograms(metrics_median, "Median")
+p25_plots <- create_split_histograms(metrics_25th, "25th Percentile")
+p75_plots <- create_split_histograms(metrics_75th, "75th Percentile")
+
+# Arrange all plots in a grid
+grid.arrange(
+  median_plots[[1]], median_plots[[2]],
+  p25_plots[[1]], p25_plots[[2]],
+  p75_plots[[1]], p75_plots[[2]],
+  ncol=2
+)
+
+```
+
+
+
+
+
+```{r}
+
+# Create scatter plots for each percentile method
+p1 <- ggplot() + 
+  geom_point(data=metrics_median, aes(x=snr, y=ssim, color=ifelse(image_index <= 30, "No Signal", "Signal")), size=3, alpha=0.6) +
+  ggtitle("Median: SNR vs SSIM") +
+  scale_color_manual(values=c("No Signal"="skyblue", "Signal"="salmon")) +
+  theme_minimal() +
+  labs(color="Group")
+
+p2 <- ggplot() + 
+  geom_point(data=metrics_25th, aes(x=snr, y=ssim, color=ifelse(image_index <= 30, "No Signal", "Signal")), size=3, alpha=0.6) +
+  ggtitle("25th Percentile: SNR vs SSIM") +
+  scale_color_manual(values=c("No Signal"="skyblue", "Signal"="salmon")) +
+  theme_minimal() +
+  labs(color="Group")
+
+p3 <- ggplot() + 
+  geom_point(data=metrics_75th, aes(x=snr, y=ssim, color=ifelse(image_index <= 30, "No Signal", "Signal")), size=3, alpha=0.6) +
+  ggtitle("75th Percentile: SNR vs SSIM") +
+  scale_color_manual(values=c("No Signal"="skyblue", "Signal"="salmon")) +
+  theme_minimal() +
+  labs(color="Group")
+
+# Arrange plots
+grid.arrange(p1, p2, p3, ncol=2)
+
+```
+
+```{r}
+
+# First, let's reshape our data for better plotting
+library(tidyr)
+
+# Function to prepare data
+prepare_data <- function(df, method_name) {
+  df$Method <- method_name
+  df$Group <- ifelse(df$image_index <= 30, "No Signal", "Signal")
+  return(df)
+}
+
+# Combine all data
+all_data <- rbind(
+  prepare_data(metrics_median, "Median"),
+  prepare_data(metrics_25th, "25th Percentile"),
+  prepare_data(metrics_75th, "75th Percentile")
+)
+
+# Create SNR boxplot
+p1 <- ggplot(all_data, aes(x=Method, y=snr, fill=Group)) +
+  geom_boxplot() +
+  ggtitle("SNR Distribution by Method and Group") +
+  theme_minimal() +
+  scale_fill_manual(values=c("No Signal"="skyblue", "Signal"="salmon")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Create SSIM boxplot
+p2 <- ggplot(all_data, aes(x=Method, y=ssim, fill=Group)) +
+  geom_boxplot() +
+  ggtitle("SSIM Distribution by Method and Group") +
+  theme_minimal() +
+  scale_fill_manual(values=c("No Signal"="skyblue", "Signal"="salmon")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Arrange plots
+grid.arrange(p1, p2, ncol=2)
+
+
+```
+
+```{r}
+
+# T-tests for Signal vs No Signal in each method
+# For Median method
+t_med_snr <- t.test(snr ~ Group, data=subset(all_data, Method=="Median"))
+t_med_ssim <- t.test(ssim ~ Group, data=subset(all_data, Method=="Median"))
+
+# For 25th Percentile
+t_25_snr <- t.test(snr ~ Group, data=subset(all_data, Method=="25th Percentile"))
+t_25_ssim <- t.test(ssim ~ Group, data=subset(all_data, Method=="25th Percentile"))
+
+# For 75th Percentile
+t_75_snr <- t.test(snr ~ Group, data=subset(all_data, Method=="75th Percentile"))
+t_75_ssim <- t.test(ssim ~ Group, data=subset(all_data, Method=="75th Percentile"))
+
+# ANOVA to compare methods
+snr_anova <- aov(snr ~ Method, data=all_data)
+ssim_anova <- aov(ssim ~ Method, data=all_data)
+
+# Print results
+cat("T-test results for Signal vs No Signal:\n\n")
+cat("Median Method:\n")
+cat("SNR: p-value =", t_med_snr$p.value, "\n")
+cat("SSIM: p-value =", t_med_ssim$p.value, "\n\n")
+
+cat("25th Percentile Method:\n")
+cat("SNR: p-value =", t_25_snr$p.value, "\n")
+cat("SSIM: p-value =", t_25_ssim$p.value, "\n\n")
+
+cat("75th Percentile Method:\n")
+cat("SNR: p-value =", t_75_snr$p.value, "\n")
+cat("SSIM: p-value =", t_75_ssim$p.value, "\n\n")
+
+cat("ANOVA results comparing methods:\n")
+cat("SNR: ")
+summary(snr_anova)
+cat("\nSSIM: ")
+summary(ssim_anova)
+
+```
+
+
+```{r}
+
+# Create split histograms with aligned bins and tick marks
+library(ggplot2)
+library(gridExtra)
+
+create_split_histograms <- function(data, title_prefix) {
+  # Split data
+  first30 <- data[1:30,]
+  last30 <- data[31:60,]
+  
+  # SNR plot with aligned breaks
+  p1 <- ggplot() + 
+    geom_histogram(data=first30, aes(x=snr, fill="First 30"), bins=15, alpha=0.6) +
+    geom_histogram(data=last30, aes(x=snr, fill="Last 30"), bins=15, alpha=0.6) +
+    scale_fill_manual(values=c("First 30"="skyblue", "Last 30"="salmon")) +
+    scale_x_continuous(breaks = seq(floor(min(data$snr)), ceiling(max(data$snr)), by=0.5)) +
+    ggtitle(paste(title_prefix, "- SNR")) +
+    theme_minimal() +
+    labs(fill="Group")
+
+  # SSIM plot with aligned breaks
+  p2 <- ggplot() + 
+    geom_histogram(data=first30, aes(x=ssim, fill="First 30"), bins=15, alpha=0.6) +
+    geom_histogram(data=last30, aes(x=ssim, fill="Last 30"), bins=15, alpha=0.6) +
+    scale_fill_manual(values=c("First 30"="skyblue", "Last 30"="salmon")) +
+    scale_x_continuous(breaks = seq(round(min(data$ssim), 4), round(max(data$ssim), 4), by=0.0025)) +
+    ggtitle(paste(title_prefix, "- SSIM")) +
+    theme_minimal() +
+    labs(fill="Group")
+    
+  return(list(p1, p2))
+}
+
+# Create plots for each percentile
+median_plots <- create_split_histograms(metrics_median, "Median")
+p25_plots <- create_split_histograms(metrics_25th, "25th Percentile")
+p75_plots <- create_split_histograms(metrics_75th, "75th Percentile")
+
+# Arrange all plots in a grid
+grid.arrange(
+  median_plots[[1]], median_plots[[2]],
+  p25_plots[[1]], p25_plots[[2]],
+  p75_plots[[1]], p75_plots[[2]],
+  ncol=2
+)
+
+```
+
 
 
 
