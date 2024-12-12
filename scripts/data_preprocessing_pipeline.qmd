@@ -72,7 +72,6 @@ if (length(image_data) > 0) {
 
 ```
 
-
 ```{r}
 
 # Assuming `image_matrix` is your image matrix
@@ -99,3 +98,189 @@ first_image_cimg <- as.cimg(first_image_matrix)
 plot(first_image_cimg, main = "Corrected First Image")
 
 ```
+```{r}
+
+matrix_copy <- image_matrix
+
+centered_matrix <- scale(matrix_copy, center = TRUE, scale = FALSE)
+
+svd_result <- svd(centered_matrix)
+
+U <- svd_result$u
+
+V <- svd_result$v
+
+D <- svd_result$d
+
+D_matrix <- diag(D)
+
+eigenvalues <- D^2
+
+```
+
+
+```{r}
+
+pc_images <- t(svd_result$v)
+
+```
+
+```{r}
+
+# Apply the transpose fix to all rows (images) in the image matrix
+fixed_image_matrix <- t(apply(pc_images, 1, process_image))
+
+# Optional: Display the first image from the fixed matrix
+first_image_vector <- fixed_image_matrix[1, ]
+first_image_matrix <- matrix(first_image_vector, nrow = image_width, ncol = image_height, byrow = FALSE)
+first_image_cimg <- as.cimg(first_image_matrix)
+
+# Display the corrected first image
+plot(first_image_cimg, main = "Corrected First Image")
+
+```
+
+
+```{r}
+
+reconstruction <- U %*% D_matrix %*% pc_images
+
+```
+
+
+```{r}
+
+# Apply the transpose fix to all rows (images) in the image matrix
+fixed_image_matrix <- t(apply(reconstruction, 1, process_image))
+
+# Optional: Display the first image from the fixed matrix
+first_image_vector <- fixed_image_matrix[33, ]
+first_image_matrix <- matrix(first_image_vector, nrow = image_width, ncol = image_height, byrow = FALSE)
+first_image_cimg <- as.cimg(first_image_matrix)
+
+# Display the corrected first image
+plot(first_image_cimg, main = "Corrected First Image")
+
+```
+
+```{r}
+
+# Function to process a single 255x255 matrix
+process_matrix <- function(flat_vector, percentile_func) {
+  # Reshape to 255x255
+  img_matrix <- matrix(flat_vector, nrow=255, ncol=255)
+  
+  # Process each column
+  for(j in 1:255) {
+    thresh_val <- percentile_func(img_matrix[,j])
+    # Subtract threshold value and cap at 0
+    img_matrix[,j] <- pmax(img_matrix[,j] - thresh_val, 0)
+  }
+  
+  # Return flattened processed matrix
+  return(as.vector(img_matrix))
+}
+
+
+# Apply to each row of pc_images
+
+processed_pc_images_median <- matrix(0, nrow=60, ncol=65025)
+
+processed_pc_images_25th <- matrix(0, nrow=60, ncol=65025)
+
+processed_pc_images_75th <- matrix(0, nrow=60, ncol=65025)
+
+
+for(i in 1:60) {
+  processed_pc_images_median[i,] <- process_matrix(pc_images[i,], median)
+  
+  processed_pc_images_25th[i,] <- process_matrix(pc_images[i,], function(x) quantile(x, 0.25))
+  
+  processed_pc_images_75th[i,] <- process_matrix(pc_images[i,], function(x) quantile(x, 0.75))
+}
+
+```
+
+
+```{r}
+
+reconstruction_median <- svd_result$u %*% D_matrix %*% processed_pc_images_median
+reconstruction_25th <- svd_result$u %*% D_matrix %*% processed_pc_images_25th
+reconstruction_75th <- svd_result$u %*% D_matrix %*% processed_pc_images_75th
+
+```
+
+
+
+```{r}
+
+# Apply the transpose fix to all rows (images) in the image matrix
+fixed_image_matrix <- t(apply(reconstruction_75th, 1, process_image))
+
+# Optional: Display the first image from the fixed matrix
+first_image_vector <- fixed_image_matrix[31, ]
+first_image_matrix <- matrix(first_image_vector, nrow = image_width, ncol = image_height, byrow = FALSE)
+first_image_cimg <- as.cimg(first_image_matrix)
+
+# Display the corrected first image
+plot(first_image_cimg, main = "Corrected First Image")
+
+```
+
+
+```{r}
+
+# Function to apply median subtraction to a matrix
+apply_median_subtraction <- function(flat_matrix) {
+  # Reshape each row to 255x255, process, and flatten back
+  processed_matrix <- matrix(0, nrow=nrow(flat_matrix), ncol=ncol(flat_matrix))
+  
+  for(i in 1:nrow(flat_matrix)) {
+    # Reshape to 255x255
+    img_matrix <- matrix(flat_matrix[i,], nrow=255, ncol=255)
+    
+    # Process each column
+    for(j in 1:255) {
+      col_median <- median(img_matrix[,j])
+      # Subtract median and cap at 0
+      img_matrix[,j] <- pmax(img_matrix[,j] - col_median, 0)
+    }
+    
+    # Flatten and store
+    processed_matrix[i,] <- as.vector(img_matrix)
+  }
+  
+  return(processed_matrix)
+}
+
+# Apply to each reconstruction
+final_median <- apply_median_subtraction(reconstruction_median)
+final_25th <- apply_median_subtraction(reconstruction_25th)
+final_75th <- apply_median_subtraction(reconstruction_75th)
+
+```
+
+
+
+
+
+```{r}
+
+# Apply the transpose fix to all rows (images) in the image matrix
+fixed_image_matrix <- t(apply(final_median, 1, process_image))
+
+# Optional: Display the first image from the fixed matrix
+first_image_vector <- fixed_image_matrix[31, ]
+first_image_matrix <- matrix(first_image_vector, nrow = image_width, ncol = image_height, byrow = FALSE)
+first_image_cimg <- as.cimg(first_image_matrix)
+
+# Display the corrected first image
+plot(first_image_cimg, main = "Corrected First Image")
+
+```
+
+
+
+
+
+
