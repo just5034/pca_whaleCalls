@@ -1,0 +1,1262 @@
+[
+  {
+    "image_index": 1,
+    "snr": 1.692,
+    "ssim": 0.9983,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 2,
+    "snr": 1.3541,
+    "ssim": 0.998,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 3,
+    "snr": 0.8103,
+    "ssim": 0.9983,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 4,
+    "snr": 0.2168,
+    "ssim": 0.996,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 5,
+    "snr": 0.7127,
+    "ssim": 0.9975,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 6,
+    "snr": -0.2005,
+    "ssim": 0.9941,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 7,
+    "snr": 0.3654,
+    "ssim": 0.9971,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 8,
+    "snr": 0.069,
+    "ssim": 0.9962,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 9,
+    "snr": 0.127,
+    "ssim": 0.9962,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 10,
+    "snr": -0.2843,
+    "ssim": 0.9952,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 11,
+    "snr": 0.974,
+    "ssim": 0.998,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 12,
+    "snr": -0.0826,
+    "ssim": 0.995,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 13,
+    "snr": -0.0075,
+    "ssim": 0.9971,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 14,
+    "snr": 2.3513,
+    "ssim": 0.9993,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 15,
+    "snr": -0.3071,
+    "ssim": 0.9914,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 16,
+    "snr": 0.3038,
+    "ssim": 0.9963,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 17,
+    "snr": 1.1775,
+    "ssim": 0.9984,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 18,
+    "snr": -0.1495,
+    "ssim": 0.9973,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 19,
+    "snr": 1.4531,
+    "ssim": 0.9985,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 20,
+    "snr": 1.4074,
+    "ssim": 0.999,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 21,
+    "snr": 1.7575,
+    "ssim": 0.9996,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 22,
+    "snr": 1.6412,
+    "ssim": 0.9985,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 23,
+    "snr": -0.0118,
+    "ssim": 0.9963,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 24,
+    "snr": 1.3702,
+    "ssim": 0.9986,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 25,
+    "snr": 0.9069,
+    "ssim": 0.9989,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 26,
+    "snr": 1.5828,
+    "ssim": 0.9995,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 27,
+    "snr": -0.3167,
+    "ssim": 0.9972,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 28,
+    "snr": 0.3746,
+    "ssim": 0.9978,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 29,
+    "snr": -0.0359,
+    "ssim": 0.9953,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 30,
+    "snr": 0.0937,
+    "ssim": 0.9969,
+    "method": "Median",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 31,
+    "snr": 0.1533,
+    "ssim": 0.9984,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 32,
+    "snr": 1.9902,
+    "ssim": 0.9993,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 33,
+    "snr": 0.8518,
+    "ssim": 0.9993,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 34,
+    "snr": 2.2512,
+    "ssim": 0.9994,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 35,
+    "snr": 1.2521,
+    "ssim": 0.9988,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 36,
+    "snr": 1.5477,
+    "ssim": 0.9993,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 37,
+    "snr": 1.1097,
+    "ssim": 0.9993,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 38,
+    "snr": 1.0444,
+    "ssim": 0.9984,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 39,
+    "snr": 1.1816,
+    "ssim": 0.9985,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 40,
+    "snr": 1.4072,
+    "ssim": 0.9989,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 41,
+    "snr": 0.29,
+    "ssim": 0.9984,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 42,
+    "snr": 1.0357,
+    "ssim": 0.9991,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 43,
+    "snr": 2.103,
+    "ssim": 0.999,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 44,
+    "snr": 0.6211,
+    "ssim": 0.9991,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 45,
+    "snr": 1.2874,
+    "ssim": 0.9987,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 46,
+    "snr": 1.3061,
+    "ssim": 0.999,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 47,
+    "snr": 0.9686,
+    "ssim": 0.9989,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 48,
+    "snr": 1.5626,
+    "ssim": 0.9989,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 49,
+    "snr": 0.6729,
+    "ssim": 0.9987,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 50,
+    "snr": 1.585,
+    "ssim": 0.9989,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 51,
+    "snr": -0.0816,
+    "ssim": 0.9984,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 52,
+    "snr": 0.8139,
+    "ssim": 0.999,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 53,
+    "snr": 1.3126,
+    "ssim": 0.9987,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 54,
+    "snr": 1.5087,
+    "ssim": 0.9991,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 55,
+    "snr": 1.3792,
+    "ssim": 0.999,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 56,
+    "snr": 1.0659,
+    "ssim": 0.9983,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 57,
+    "snr": 0.8134,
+    "ssim": 0.9991,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 58,
+    "snr": 1.3286,
+    "ssim": 0.9988,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 59,
+    "snr": 0.8662,
+    "ssim": 0.9989,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 60,
+    "snr": 1.7022,
+    "ssim": 0.9992,
+    "method": "Median",
+    "group": "Signal"
+  },
+  {
+    "image_index": 1,
+    "snr": 2.4534,
+    "ssim": 0.9986,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 2,
+    "snr": 1.9786,
+    "ssim": 0.9983,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 3,
+    "snr": 1.0522,
+    "ssim": 0.9984,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 4,
+    "snr": 0.2352,
+    "ssim": 0.9959,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 5,
+    "snr": 0.9835,
+    "ssim": 0.9976,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 6,
+    "snr": -0.2531,
+    "ssim": 0.9939,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 7,
+    "snr": 0.5034,
+    "ssim": 0.9971,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 8,
+    "snr": 0.1246,
+    "ssim": 0.9962,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 9,
+    "snr": 0.1561,
+    "ssim": 0.9961,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 10,
+    "snr": -0.4367,
+    "ssim": 0.995,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 11,
+    "snr": 1.3069,
+    "ssim": 0.9981,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 12,
+    "snr": -0.0749,
+    "ssim": 0.9949,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 13,
+    "snr": -0.0229,
+    "ssim": 0.997,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 14,
+    "snr": 3.4352,
+    "ssim": 0.9995,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 15,
+    "snr": -0.389,
+    "ssim": 0.9912,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 16,
+    "snr": 0.4436,
+    "ssim": 0.9963,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 17,
+    "snr": 1.7666,
+    "ssim": 0.9986,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 18,
+    "snr": -0.1488,
+    "ssim": 0.9973,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 19,
+    "snr": 1.881,
+    "ssim": 0.9986,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 20,
+    "snr": 2.1375,
+    "ssim": 0.9991,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 21,
+    "snr": 2.688,
+    "ssim": 0.9997,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 22,
+    "snr": 2.3482,
+    "ssim": 0.9987,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 23,
+    "snr": 0.0189,
+    "ssim": 0.9963,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 24,
+    "snr": 1.9404,
+    "ssim": 0.9987,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 25,
+    "snr": 1.3014,
+    "ssim": 0.9989,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 26,
+    "snr": 2.4636,
+    "ssim": 0.9996,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 27,
+    "snr": -0.5006,
+    "ssim": 0.997,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 28,
+    "snr": 0.5873,
+    "ssim": 0.9979,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 29,
+    "snr": -0.0358,
+    "ssim": 0.9952,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 30,
+    "snr": 0.2137,
+    "ssim": 0.9969,
+    "method": "25th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 31,
+    "snr": 0.3073,
+    "ssim": 0.9984,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 32,
+    "snr": 2.818,
+    "ssim": 0.9994,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 33,
+    "snr": 1.1594,
+    "ssim": 0.9993,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 34,
+    "snr": 3.1684,
+    "ssim": 0.9995,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 35,
+    "snr": 1.7419,
+    "ssim": 0.9989,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 36,
+    "snr": 1.9723,
+    "ssim": 0.9993,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 37,
+    "snr": 1.6493,
+    "ssim": 0.9994,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 38,
+    "snr": 1.4253,
+    "ssim": 0.9985,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 39,
+    "snr": 1.761,
+    "ssim": 0.9987,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 40,
+    "snr": 2.0211,
+    "ssim": 0.9991,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 41,
+    "snr": 0.3764,
+    "ssim": 0.9984,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 42,
+    "snr": 1.3839,
+    "ssim": 0.9992,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 43,
+    "snr": 3.0523,
+    "ssim": 0.9992,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 44,
+    "snr": 0.8564,
+    "ssim": 0.9991,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 45,
+    "snr": 1.8489,
+    "ssim": 0.9988,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 46,
+    "snr": 1.8594,
+    "ssim": 0.9991,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 47,
+    "snr": 1.3656,
+    "ssim": 0.999,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 48,
+    "snr": 2.169,
+    "ssim": 0.9991,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 49,
+    "snr": 0.8351,
+    "ssim": 0.9987,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 50,
+    "snr": 2.2284,
+    "ssim": 0.999,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 51,
+    "snr": -0.1354,
+    "ssim": 0.9983,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 52,
+    "snr": 1.1761,
+    "ssim": 0.9991,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 53,
+    "snr": 1.8328,
+    "ssim": 0.9988,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 54,
+    "snr": 2.1633,
+    "ssim": 0.9992,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 55,
+    "snr": 1.876,
+    "ssim": 0.9991,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 56,
+    "snr": 1.437,
+    "ssim": 0.9984,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 57,
+    "snr": 1.2346,
+    "ssim": 0.9992,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 58,
+    "snr": 1.8766,
+    "ssim": 0.9989,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 59,
+    "snr": 1.372,
+    "ssim": 0.999,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 60,
+    "snr": 2.5359,
+    "ssim": 0.9993,
+    "method": "25th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 1,
+    "snr": 0.9295,
+    "ssim": 0.998,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 2,
+    "snr": 0.7201,
+    "ssim": 0.9977,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 3,
+    "snr": 0.4488,
+    "ssim": 0.9982,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 4,
+    "snr": 0.1103,
+    "ssim": 0.996,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 5,
+    "snr": 0.4118,
+    "ssim": 0.9973,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 6,
+    "snr": -0.1694,
+    "ssim": 0.9942,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 7,
+    "snr": 0.1654,
+    "ssim": 0.997,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 8,
+    "snr": -0.0171,
+    "ssim": 0.9962,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 9,
+    "snr": 0.076,
+    "ssim": 0.9962,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 10,
+    "snr": -0.1639,
+    "ssim": 0.9954,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 11,
+    "snr": 0.5495,
+    "ssim": 0.9978,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 12,
+    "snr": -0.0537,
+    "ssim": 0.995,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 13,
+    "snr": -0.0043,
+    "ssim": 0.9971,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 14,
+    "snr": 1.3164,
+    "ssim": 0.9991,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 15,
+    "snr": -0.2005,
+    "ssim": 0.9917,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 16,
+    "snr": 0.142,
+    "ssim": 0.9962,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 17,
+    "snr": 0.618,
+    "ssim": 0.9982,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 18,
+    "snr": -0.1744,
+    "ssim": 0.9974,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 19,
+    "snr": 0.7317,
+    "ssim": 0.9982,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 20,
+    "snr": 0.7039,
+    "ssim": 0.9989,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 21,
+    "snr": 0.8324,
+    "ssim": 0.9995,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 22,
+    "snr": 0.8894,
+    "ssim": 0.9982,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 23,
+    "snr": -0.029,
+    "ssim": 0.9963,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 24,
+    "snr": 0.7786,
+    "ssim": 0.9984,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 25,
+    "snr": 0.4359,
+    "ssim": 0.9988,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 26,
+    "snr": 0.7716,
+    "ssim": 0.9994,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 27,
+    "snr": -0.1758,
+    "ssim": 0.9974,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 28,
+    "snr": 0.2014,
+    "ssim": 0.9978,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 29,
+    "snr": -0.0662,
+    "ssim": 0.9954,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 30,
+    "snr": 0.0251,
+    "ssim": 0.9969,
+    "method": "75th Percentile",
+    "group": "No Signal"
+  },
+  {
+    "image_index": 31,
+    "snr": 0.0571,
+    "ssim": 0.9984,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 32,
+    "snr": 1.0758,
+    "ssim": 0.9991,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 33,
+    "snr": 0.4377,
+    "ssim": 0.9993,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 34,
+    "snr": 1.2146,
+    "ssim": 0.9992,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 35,
+    "snr": 0.7115,
+    "ssim": 0.9987,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 36,
+    "snr": 0.883,
+    "ssim": 0.9992,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 37,
+    "snr": 0.5924,
+    "ssim": 0.9992,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 38,
+    "snr": 0.5444,
+    "ssim": 0.9982,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 39,
+    "snr": 0.661,
+    "ssim": 0.9984,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 40,
+    "snr": 0.7595,
+    "ssim": 0.9988,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 41,
+    "snr": 0.138,
+    "ssim": 0.9984,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 42,
+    "snr": 0.5798,
+    "ssim": 0.9991,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 43,
+    "snr": 1.1098,
+    "ssim": 0.9988,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 44,
+    "snr": 0.2864,
+    "ssim": 0.999,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 45,
+    "snr": 0.6692,
+    "ssim": 0.9985,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 46,
+    "snr": 0.7448,
+    "ssim": 0.9988,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 47,
+    "snr": 0.4344,
+    "ssim": 0.9988,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 48,
+    "snr": 0.861,
+    "ssim": 0.9987,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 49,
+    "snr": 0.3099,
+    "ssim": 0.9986,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 50,
+    "snr": 0.911,
+    "ssim": 0.9987,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 51,
+    "snr": -0.0884,
+    "ssim": 0.9984,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 52,
+    "snr": 0.4016,
+    "ssim": 0.999,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 53,
+    "snr": 0.7755,
+    "ssim": 0.9985,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 54,
+    "snr": 0.8218,
+    "ssim": 0.9989,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 55,
+    "snr": 0.7913,
+    "ssim": 0.9988,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 56,
+    "snr": 0.6294,
+    "ssim": 0.9982,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 57,
+    "snr": 0.4243,
+    "ssim": 0.9991,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 58,
+    "snr": 0.7133,
+    "ssim": 0.9987,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 59,
+    "snr": 0.3749,
+    "ssim": 0.9988,
+    "method": "75th Percentile",
+    "group": "Signal"
+  },
+  {
+    "image_index": 60,
+    "snr": 0.8782,
+    "ssim": 0.9991,
+    "method": "75th Percentile",
+    "group": "Signal"
+  }
+]

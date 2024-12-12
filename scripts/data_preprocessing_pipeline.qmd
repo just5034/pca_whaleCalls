@@ -660,5 +660,18 @@ grid.arrange(
 
 
 
+```{r}
+# Combine and prepare the data
+combined_metrics <- rbind(
+  transform(metrics_median, method = "Median"),
+  transform(metrics_25th, method = "25th Percentile"),
+  transform(metrics_75th, method = "75th Percentile")
+)
+combined_metrics$group <- ifelse(combined_metrics$image_index <= 30, "No Signal", "Signal")
 
+# Export to JSON
+library(jsonlite)
+json_data <- toJSON(combined_metrics, pretty=TRUE)
+writeLines(json_data, "metrics_data.json")
+```
 
