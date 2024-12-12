@@ -9,7 +9,7 @@ execute:
   echo: true
 
 book:
-  title: "Bird Migration"
+  title: "Principal Component Denoising (Whale Calls)"
   author:
     - Justin Kim (UNI1)
     - Kshitij Patil (UNI2)

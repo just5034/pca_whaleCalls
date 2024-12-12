@@ -2,7 +2,7 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Bird Migration",
+    "title": "Principal Component Denoising (Whale Calls)",
     "section": "",
     "text": "1 Introduction\nMaritime technological advancements in recent years have enhanced marine mammal detection / surveying efforts. In particular, the introduction of passive and active bio-acoustic monitoring via buoy networks have allowed for the current shipping industry to identify optimal transport routes while minimizing the impact of commercial shipping on the ocean’s environment. One challenge that is frequently encountered in the efforts to identify the presence of marine mammals is the presence of heavy audio interference picked up by the deployed buoy microphones. The interference itself comes in many different forms, and as a result, efforts to train a model that can match human performance in the detection / labeling of said calls often encounter sub-optimal model performance issues. To this end, there exists a present gap in the state of the art for a denoising algorithm that operates pre-hoc (independent of model training). From this the motivation for our project is derived. We seek to use this project to propose an algorithmic solution to this issue and provide a visual exploration of the effects of our solution on the dataset to further dive into both the quality of the dataset and any further implications.",
     "crumbs": [
